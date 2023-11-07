@@ -7,6 +7,8 @@ import 'package:http/http.dart' as http;
 import 'detail_screen.dart';
 
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -25,12 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
-
-    Color _greenColor = Color(0xff2a9d8f);
-    Color _redColor = Color(0xffe76f51);
-    Color _blueColor = Color(0xff37A5C6);
 
     return Scaffold(
         backgroundColor: Colors.white,
@@ -48,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
               top: 100,
               left: 20,
               child: Text(
-                'Pokedex',
+                'Pokemon',
                 style: TextStyle(
                   color: Colors.black.withOpacity(0.6),
                   fontWeight: FontWeight.bold,
@@ -65,10 +62,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     ? Expanded(
                         child: GridView.builder(
                             gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
+                                const SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 2, childAspectRatio: 1.4),
                             shrinkWrap: true,
-                            physics: BouncingScrollPhysics(),
+                            physics: const BouncingScrollPhysics(),
                             itemCount: pokedex.length,
                             itemBuilder: (context, index) {
                               return Padding(
@@ -118,7 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                                       : pokedex[index]['type'][0] == "Normal"
                                                                                           ? Colors.black26
                                                                                           : Colors.pink,
-                                          borderRadius: BorderRadius.all(Radius.circular(25))),
+                                          borderRadius: const BorderRadius.all(Radius.circular(25))),
                                       child: Stack(
                                         children: [
                                           Positioned(
@@ -141,7 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   height: 100,
                                                   fit: BoxFit.fitHeight,
                                                   placeholder: (context, url) =>
-                                                      Center(
+                                                      const Center(
                                                         child:
                                                             CircularProgressIndicator(),
                                                       )),
@@ -151,6 +148,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                             top: 55,
                                             left: 15,
                                             child: Container(
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      const BorderRadius.all(
+                                                          Radius.circular(20)),
+                                                  color: Colors.black
+                                                      .withOpacity(0.5)),
                                               child: Padding(
                                                 padding: const EdgeInsets.only(
                                                     left: 10.0,
@@ -159,7 +162,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     bottom: 5),
                                                 child: Text(
                                                   pokedex[index]['type'][0],
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                       color: Colors.white,
                                                       shadows: [
                                                         BoxShadow(
@@ -172,12 +175,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       ]),
                                                 ),
                                               ),
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(20)),
-                                                  color: Colors.black
-                                                      .withOpacity(0.5)),
                                             ),
                                           ),
                                           Positioned(
@@ -185,7 +182,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             left: 15,
                                             child: Text(
                                               pokedex[index]['name'],
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                   fontWeight: FontWeight.bold,
                                                   fontSize: 18,
                                                   color: Colors.white,
@@ -207,7 +204,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (_) => DetailScreen(
-                                                key: ValueKey<String>(
+                                                key: const ValueKey<String>(
                                                     'your_unique_key_here'),
                                                 heroTag: index,
                                                 pokemonDetail: pokedex[index],
@@ -254,7 +251,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               );
                             }))
-                    : Center(
+                    : const Center(
                         child: CircularProgressIndicator(),
                       )
               ],
@@ -262,7 +259,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Positioned(
             top: 0,
-            child: Container(
+            child: SizedBox(
               height: 150,
               width: width,
             ),
