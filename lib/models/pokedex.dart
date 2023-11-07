@@ -99,10 +99,8 @@ class Pokemon {
     data['spawn_time'] = this.spawnTime;
     data['multipliers'] = this.multipliers;
     data['weaknesses'] = this.weaknesses;
-    if (this.nextEvolution != null) {
-      data['next_evolution'] =
-          this.nextEvolution.map((v) => v.toJson()).toList();
-    }
+    data['next_evolution'] =
+        nextEvolution.map((v) => v.toJson()).toList();
 
     return data;
   }
@@ -121,8 +119,8 @@ class NextEvolution {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['num'] = this.num;
-    data['name'] = this.name;
+    data['num'] = num;
+    data['name'] = name;
     return data;
   }
 }
