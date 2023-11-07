@@ -32,10 +32,10 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.white,
         body: Stack(children: [
           Positioned(
-            top: -50,
+            top: 0,
             right: -50,
             child: Image.asset(
-              'images/pokeball.png',
+              'images/pokeball2.png',
               width: 200,
               fit: BoxFit.fitWidth,
             ),
