@@ -57,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
             bottom: 0,
             width: width,
             child: Column(
-              children: [
+              children:[
                 pokedex != null
                     ? Expanded(
                         child: GridView.builder(
