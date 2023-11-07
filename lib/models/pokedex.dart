@@ -39,6 +39,7 @@ class Pokemon {
   late List<String> weaknesses;
   late List<NextEvolution> nextEvolution;
 
+
   Pokemon({
     required this.id,
     required this.num,
