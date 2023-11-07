@@ -4,6 +4,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import 'detail_screen.dart';
+
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -14,6 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
+    // TODO: implement initState
     super.initState();
     if (mounted) {
       fetchPokemonData();
@@ -45,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
               top: 100,
               left: 20,
               child: Text(
-                'Pokemon',
+                'Pokedex',
                 style: TextStyle(
                   color: Colors.black.withOpacity(0.6),
                   fontWeight: FontWeight.bold,
@@ -62,10 +65,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     ? Expanded(
                         child: GridView.builder(
                             gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 2, childAspectRatio: 1.4),
                             shrinkWrap: true,
-                            physics: const BouncingScrollPhysics(),
+                            physics: BouncingScrollPhysics(),
                             itemCount: pokedex.length,
                             itemBuilder: (context, index) {
                               return Padding(
@@ -115,7 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                                       : pokedex[index]['type'][0] == "Normal"
                                                                                           ? Colors.black26
                                                                                           : Colors.pink,
-                                          borderRadius: const BorderRadius.all(Radius.circular(25))),
+                                          borderRadius: BorderRadius.all(Radius.circular(25))),
                                       child: Stack(
                                         children: [
                                           Positioned(
@@ -138,7 +141,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   height: 100,
                                                   fit: BoxFit.fitHeight,
                                                   placeholder: (context, url) =>
-                                                      const Center(
+                                                      Center(
                                                         child:
                                                             CircularProgressIndicator(),
                                                       )),
@@ -148,12 +151,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                             top: 55,
                                             left: 15,
                                             child: Container(
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      const BorderRadius.all(
-                                                          Radius.circular(20)),
-                                                  color: Colors.black
-                                                      .withOpacity(0.5)),
                                               child: Padding(
                                                 padding: const EdgeInsets.only(
                                                     left: 10.0,
@@ -162,7 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     bottom: 5),
                                                 child: Text(
                                                   pokedex[index]['type'][0],
-                                                  style: const TextStyle(
+                                                  style: TextStyle(
                                                       color: Colors.white,
                                                       shadows: [
                                                         BoxShadow(
@@ -175,6 +172,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       ]),
                                                 ),
                                               ),
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(20)),
+                                                  color: Colors.black
+                                                      .withOpacity(0.5)),
                                             ),
                                           ),
                                           Positioned(
@@ -182,7 +185,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             left: 15,
                                             child: Text(
                                               pokedex[index]['name'],
-                                              style: const TextStyle(
+                                              style: TextStyle(
                                                   fontWeight: FontWeight.bold,
                                                   fontSize: 18,
                                                   color: Colors.white,
@@ -199,10 +202,59 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ),
                                     ),
                                   ),
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) => DetailScreen(
+                                                key: ValueKey<String>(
+                                                    'your_unique_key_here'),
+                                                heroTag: index,
+                                                pokemonDetail: pokedex[index],
+                                                color: pokedex[index]['type']
+                                                            [0] ==
+                                                        "Grass"
+                                                    ? Colors.greenAccent
+                                                    : pokedex[index]['type']
+                                                                [0] ==
+                                                            "Fire"
+                                                        ? Colors.redAccent
+                                                        : pokedex[index]['type']
+                                                                    [0] ==
+                                                                "Water"
+                                                            ? Colors.blue
+                                                            : pokedex[index]['type']
+                                                                        [0] ==
+                                                                    "Poison"
+                                                                ? Colors
+                                                                    .deepPurpleAccent
+                                                                : pokedex[index]['type'][0] ==
+                                                                        "Electric"
+                                                                    ? Colors
+                                                                        .amber
+                                                                    : pokedex[index]['type'][0] ==
+                                                                            "Rock"
+                                                                        ? Colors
+                                                                            .grey
+                                                                        : pokedex[index]['type'][0] ==
+                                                                                "Ground"
+                                                                            ? Colors.brown
+                                                                            : pokedex[index]['type'][0] == "Psychic"
+                                                                                ? Colors.indigo
+                                                                                : pokedex[index]['type'][0] == "Fighting"
+                                                                                    ? Colors.orange
+                                                                                    : pokedex[index]['type'][0] == "Bug"
+                                                                                        ? Colors.lightGreenAccent
+                                                                                        : pokedex[index]['type'][0] == "Ghost"
+                                                                                            ? Colors.deepPurple
+                                                                                            : pokedex[index]['type'][0] == "Normal"
+                                                                                                ? Colors.white70
+                                                                                                : Colors.pink)));
+                                  },
                                 ),
                               );
                             }))
-                    : const Center(
+                    : Center(
                         child: CircularProgressIndicator(),
                       )
               ],
@@ -210,7 +262,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Positioned(
             top: 0,
-            child: SizedBox(
+            child: Container(
               height: 150,
               width: width,
             ),
