@@ -1,33 +1,36 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
-  runApp(MyApp());
-}
+import 'detail_screen.dart';
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Pokémon Pokedex',
+    return const MaterialApp(
+      title: 'POKEMON',
       home: PokemonList(),
     );
   }
 }
 
-class PokemonList extends StatefulWidget {
-  @override
-  _PokemonListState createState() => _PokemonListState();
-}
+class PokemonModel extends ChangeNotifier {
+  late List<dynamic> _pokemonList;
+  late List<String> _bookmarkedPokemon;
 
-class _PokemonListState extends State<PokemonList> {
-  late List<dynamic> pokemonList;
+  List<dynamic> get pokemonList => _pokemonList;
 
-  @override
-  void initState() {
-    super.initState();
+  List<String> get bookmarkedPokemon => _bookmarkedPokemon;
+
+  PokemonModel() {
+    _pokemonList = [];
+    _bookmarkedPokemon = [];
     fetchData();
+    loadBookmarks();
   }
 
   Future<void> fetchData() async {
@@ -37,37 +40,87 @@ class _PokemonListState extends State<PokemonList> {
     );
 
     if (response.statusCode == 200) {
-      setState(() {
-        pokemonList = json.decode(response.body)['pokemon'];
-      });
+      _pokemonList = json.decode(response.body)['pokemon'];
+      notifyListeners();
     } else {
       throw Exception('Failed to load data');
     }
   }
 
+  Future<void> loadBookmarks() async {
+    final prefs = await SharedPreferences.getInstance();
+    _bookmarkedPokemon = prefs.getStringList('bookmarkedPokemon') ?? [];
+    notifyListeners();
+  }
+
+  Future<void> toggleBookmark(String pokemonName) async {
+    final prefs = await SharedPreferences.getInstance();
+    if (_bookmarkedPokemon.contains(pokemonName)) {
+      _bookmarkedPokemon.remove(pokemonName);
+    } else {
+      _bookmarkedPokemon.add(pokemonName);
+    }
+    prefs.setStringList('bookmarkedPokemon', _bookmarkedPokemon);
+    notifyListeners();
+  }
+
+  bool isBookmarked(String pokemonName) {
+    return _bookmarkedPokemon.contains(pokemonName);
+  }
+}
+
+class PokemonList extends StatelessWidget {
+  const PokemonList({super.key});
+
   @override
   Widget build(BuildContext context) {
+    final pokemonModel = Provider.of<PokemonModel>(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Pokémon List'),
+        title: const Text('Pokemon List'),
       ),
-      body: pokemonList == null
-          ? Center(
-        child: CircularProgressIndicator(),
-      )
+      body: pokemonModel.pokemonList.isEmpty
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
           : ListView.builder(
-        itemCount: pokemonList.length,
-        itemBuilder: (context, index) {
-          final pokemon = pokemonList[index];
-          return ListTile(
-            title: Text(pokemon['name']),
-            subtitle: Text('Type: ${pokemon['type'].join(', ')}'),
-            leading: CircleAvatar(
-              backgroundImage: NetworkImage(pokemon['img']),
+              itemCount: pokemonModel.pokemonList.length,
+              itemBuilder: (context, index) {
+                final pokemon = pokemonModel.pokemonList[index];
+                final pokemonName = pokemon['name'];
+
+                return ListTile(
+                  title: Text(pokemonName),
+                  subtitle: Text('Type: ${pokemon['type'].join(', ')}'),
+                  leading: CircleAvatar(
+                    backgroundImage: NetworkImage(pokemon['img']),
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            PokemonDetailScreen(pokemon: pokemon),
+                      ),
+                    );
+                  },
+                  trailing: GestureDetector(
+                    onTap: () {
+                      pokemonModel.toggleBookmark(pokemonName);
+                    },
+                    child: Icon(
+                      pokemonModel.isBookmarked(pokemonName)
+                          ? Icons.bookmark
+                          : Icons.bookmark_border,
+                      color: pokemonModel.isBookmarked(pokemonName)
+                          ? Colors.blue
+                          : null,
+                    ),
+                  ),
+                );
+              },
             ),
-          );
-        },
-      ),
     );
   }
 }
